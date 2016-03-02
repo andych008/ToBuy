@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">购物清单</string>
+
+    <string name="create">创建</string>
+    <string name="cancel">取消</string>
+    <string name="new_item">增加</string>
+    <string name="modify_item">修改</string>
+    <string name="new_item_hint">内容</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_reload">刷新</string>
+</resources>

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ToBuy</string>
+
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_item">Add</string>
+    <string name="modify_item">Modify</string>
+    <string name="new_item_hint">Description</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_reload">refresh</string>
+</resources>

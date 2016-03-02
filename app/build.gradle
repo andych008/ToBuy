@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    dataBinding {
+        enabled true
+    }
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.dwgg.tobuy"
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    // Android dependencies.
+    compile rootProject.ext.supportV7_appcompat
+    compile rootProject.ext.support_design
+    compile rootProject.ext.supportAnnotations
+
+    // Square dependencies.
+    compile rootProject.ext.dagger
+    apt rootProject.ext.daggerCompiler
+    debugCompile rootProject.ext.leakcanary_debug
+    releaseCompile rootProject.ext.leakcanary_release
+
+    // Rx dependencies.
+    compile rootProject.ext.rxJava
+    compile rootProject.ext.rxAndroid
+    compile rootProject.ext.rxBinding
+
+    // Third-party dependencies.
+    compile rootProject.ext.timber
+    compile rootProject.ext.ormlite
+}
