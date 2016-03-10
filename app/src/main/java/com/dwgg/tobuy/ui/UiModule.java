@@ -6,6 +6,7 @@ import dagger.Module;
         injects = {
                 ItemsFragment.class,
                 NewItemFragment.class,
+                MainActivity.class
         },
         complete = false,
         library = true

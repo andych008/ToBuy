@@ -13,13 +13,23 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.dwgg.tobuy.R;
+import com.dwgg.tobuy.ToBuyApp;
+import com.dwgg.tobuy.event.TextEvent;
+import com.dwgg.tobuy.util.RxBus;
+
+import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ItemsFragment.Listener {
 
+    @Inject
+    RxBus rxBus;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ToBuyApp.objectGraph(this).inject(this);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -94,11 +104,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showNewItemDialog() {
+        rxBus.postSticky(new TextEvent("please input!"));
         NewItemFragment.newInstance().show(getSupportFragmentManager(), "new-item");
     }
 
     @Override
     public void onModifyItemClicked(long id, String desc) {
+        rxBus.postSticky(new TextEvent("please modify!"));
         NewItemFragment.newInstance(id, desc).show(getSupportFragmentManager(), "new-item");
     }
 }

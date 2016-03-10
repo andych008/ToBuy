@@ -17,6 +17,7 @@ import com.dwgg.tobuy.ToBuyApp;
 import com.dwgg.tobuy.databinding.NewItemBinding;
 import com.dwgg.tobuy.db.DbOpenHelper;
 import com.dwgg.tobuy.event.ItemReloadEvent;
+import com.dwgg.tobuy.event.TextEvent;
 import com.dwgg.tobuy.model.ToBuyModel;
 import com.dwgg.tobuy.util.RxBus;
 import com.dwgg.tobuy.util.Tools;
@@ -31,6 +32,7 @@ import rx.functions.Action1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 
@@ -47,6 +49,8 @@ public final class NewItemFragment extends DialogFragment {
 
     @Inject
     ToBuyModel model;
+
+    private CompositeSubscription subscriptions;
 
     public static NewItemFragment newInstance(long id, String description) {
         Bundle args = new Bundle();
@@ -70,6 +74,12 @@ public final class NewItemFragment extends DialogFragment {
         super.onAttach(activity);
         ToBuyApp.objectGraph(activity).inject(this);
         Timber.tag(this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        subscriptions = new CompositeSubscription();
     }
 
     @NonNull
@@ -136,6 +146,25 @@ public final class NewItemFragment extends DialogFragment {
                     }
                 })
                 .create();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        subscriptions.add(rxBus.registerSticky(TextEvent.class)
+                .subscribe(new Action1<TextEvent>() {
+                    @Override
+                    public void call(TextEvent event) {
+                        Tools.showToastSafty(getContext(), event.getText());
+                    }
+                }));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        subscriptions.unsubscribe();
     }
 
     private long getArgId() {

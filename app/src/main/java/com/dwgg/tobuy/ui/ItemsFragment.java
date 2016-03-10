@@ -165,13 +165,14 @@ public final class ItemsFragment extends Fragment {
         super.onResume();
 
         subscriptions = new CompositeSubscription();
-        subscriptions.add(rxBus.toObserverable(ItemReloadEvent.class)
+        subscriptions.add(rxBus.register(ItemReloadEvent.class)
                 .subscribe(new Action1<ItemReloadEvent>() {
                     @Override
                     public void call(ItemReloadEvent userEvent) {
                         load();
                     }
                 }));
+
         load();
     }
 

@@ -2,6 +2,7 @@ package com.dwgg.tobuy.util;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 import rx.subjects.Subject;
@@ -10,10 +11,7 @@ public class RxBus {
 
     private static RxBus defaultInstance;
     private final Subject bus;
-
-    public RxBus() {
-        bus = new SerializedSubject<>(PublishSubject.create());
-    }
+    private final Subject stickyBus;
 
     public static RxBus getDefault() {
         if (defaultInstance == null) {
@@ -26,17 +24,36 @@ public class RxBus {
         return defaultInstance;
     }
 
-    public void post(Object o) {
-        bus.onNext(o);
+    private RxBus() {
+        bus = new SerializedSubject<>(PublishSubject.create());
+        stickyBus = new SerializedSubject<>(BehaviorSubject.create());
     }
 
-    public <T extends Object> Observable<T> toObserverable(final Class<T> eventType) {
-        return bus.filter(new Func1<Object, Boolean>() {
+    public <T extends Object> Observable<T> register(final Class<T> eventType) {
+        return bus.asObservable().onBackpressureBuffer().filter(new Func1<Object, Boolean>() {
             @Override
             public Boolean call(Object o) {
                 return eventType.isInstance(o);
             }
         })
                 .cast(eventType);
+    }
+
+    public <T extends Object> Observable<T> registerSticky(final Class<T> eventType) {
+        return stickyBus.asObservable().share().onBackpressureBuffer().filter(new Func1<Object, Boolean>() {
+            @Override
+            public Boolean call(Object o) {
+                return eventType.isInstance(o);
+            }
+        }).cast(eventType)
+                ;
+    }
+
+    public void post(Object o) {
+        bus.onNext(o);
+    }
+
+    public void postSticky(Object o) {
+        stickyBus.onNext(o);
     }
 }
